@@ -39,13 +39,25 @@ namespace SwimmingPoolAndGymManagement
                 string lastName = TextBox2.Text;
                 string email = TextBox3.Text;
                 string phn = TextBox4.Text;
-                string gender = DropDownList1.DataTextField;
+                string gender;
+                if(DropDownList1.DataTextField == "")
+                {
+                    gender = "Male";
+                }
+                else
+                {
+                    gender = DropDownList1.DataTextField;
+                }
+
+                
       
 
                 string query = "Insert into [dbo].[CredentialsTable] (UserName, Password)  Values(@userName,@password)";
 
                 string query2 = "Insert into [dbo].[UserDetailsTable] (UserName, Gender, firstName, lastName, EmailId, PhoneNumber) " +
                     "Values(@userName,@gender,@firstName,@lastName,@email,@phn)";
+
+                
 
                 SqlCommand insertCommand = new SqlCommand(query, myConnection);
 
@@ -67,7 +79,18 @@ namespace SwimmingPoolAndGymManagement
                 insertCommand.Parameters.AddWithValue("@phn", phn);
                 insertCommand.ExecuteNonQuery();
 
-                
+                if (CheckBox1.Checked == true)
+                {
+                    string approve = "Pending";
+                    string qu1 = "Insert into [dbo].[Arequest] (UserName, Areq) Values(@userName,@approve)";
+                    SqlCommand i= new SqlCommand(qu1, myConnection);
+                    i.Parameters.AddWithValue("@userName", userName);
+                    i.Parameters.AddWithValue("@approve", approve);
+
+                    i.ExecuteNonQuery();
+                }
+
+
             }
             
             catch(SqlException ms)
@@ -115,7 +138,7 @@ namespace SwimmingPoolAndGymManagement
 
         }
 
-
+        
 
     }
 }

@@ -15,6 +15,7 @@ namespace SwimmingPoolAndGymManagement
     public partial class Admin_home : System.Web.UI.Page
     {
         public static int isAdmin = 0;
+        public static int num = 0;
         protected void Page_Load(object sender, EventArgs e)
         {
             clientsData.Visible = false;
@@ -60,17 +61,27 @@ namespace SwimmingPoolAndGymManagement
         protected void Button1_Click(object sender, EventArgs e)
         {
             
+
         }
 
         private void bindData()
         {
             clientsData.Visible = false;
-            
-
+            string query;
+            string p = "Pending";
             DataTable dt = new DataTable();
-            string query = "SELECT * from [dbo].[CredentialsTable] as C INNER JOIN [dbo].[UserDetailsTable] as T " +
+            if (num == 0)
+            {
+                query = "SELECT * from [dbo].[CredentialsTable] as C INNER JOIN [dbo].[UserDetailsTable] as T " +
                 "ON C.UserName = T.UserName where isAdmin = " + isAdmin.ToString();
+            }
+            else
+            {
+                string queryFormat = "Select * from [dbo].[Arequest] as C INNER JOIN [dbo].[UserDetailsTable] as T " +
+                "on C.UserName = T.UserName where Areq = '{0}'";
 
+                query = String.Format(queryFormat, p);
+            }
 
             using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyfFrstDataBaseConnectionString"].ConnectionString))
             {
@@ -99,51 +110,91 @@ namespace SwimmingPoolAndGymManagement
         protected void LinkButton1_Click(object sender, EventArgs e)
         {
             isAdmin = 0;
+            num = 0;
             bindData();
+        }
+
+        protected void clientsData_OnRowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            Button lbDelete = (Button)e.Row.Cells[6].FindControl("Button3");
+            Button lbEdit = (Button)e.Row.Cells[6].FindControl("Button4");
+            Button lbSave = (Button)e.Row.Cells[6].FindControl("Button5");
+            Button lbCancel = (Button)e.Row.Cells[6].FindControl("Button6");
+            Button lbAddNew = (Button)e.Row.Cells[6].FindControl("Button7");
+            Button lbApprove = (Button)e.Row.Cells[6].FindControl("Button8");
+
+
+            if (isAdmin == 1 && (lbDelete != null && lbEdit != null))
+            {
+                lbDelete.Visible = false;
+                lbEdit.Visible = false;
+                lbApprove.Visible = false;
+            }
+
+            if(num == 0 && lbApprove != null)
+            {
+                lbApprove.Visible = false;
+            }
+
+            if (num == 1 && lbApprove != null)
+            {
+                if (lbEdit != null)
+                {
+                    lbEdit.Visible = false;
+                }
+
+                lbApprove.Visible = true;
+                clientsData.ShowFooter = false;
+            }
         }
 
         protected void clientsData_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             try
             {
+                if (e.CommandName == "AddNew")
 
-                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyfFrstDataBaseConnectionString"].ConnectionString))
                 {
-                    con.Open();
-                    string userName = (clientsData.FooterRow.FindControl("textBox2") as TextBox).Text.Trim();
-                    string gender = (clientsData.FooterRow.FindControl("textBox4") as TextBox).Text.Trim();
-                    string firstName = (clientsData.FooterRow.FindControl("textBox6") as TextBox).Text.Trim();
-                    string lastName = (clientsData.FooterRow.FindControl("textBox8") as TextBox).Text.Trim();
-                    string emailId = (clientsData.FooterRow.FindControl("textBox10") as TextBox).Text.Trim();
-                    string phoneNumber = (clientsData.FooterRow.FindControl("textBox12") as TextBox).Text.Trim();
-
-                    string query1 = "Insert into [dbo].[CredentialsTable] (UserName, Password, IsAdmin)  Values(@userName,@password, @isAdmin)";
-
-                    using (SqlCommand cmd = new SqlCommand(query1, con))
+                    using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyfFrstDataBaseConnectionString"].ConnectionString))
                     {
-                        cmd.Parameters.AddWithValue("@userName", userName);
-                        cmd.Parameters.AddWithValue("@password", "1234");
-                        cmd.Parameters.AddWithValue("@isAdmin", isAdmin);
-                        cmd.ExecuteNonQuery();
+                        con.Open();
+
+                        string userName = (clientsData.FooterRow.FindControl("TextBox2") as TextBox).Text.Trim();
+                        string gender = (clientsData.FooterRow.FindControl("TextBox4") as TextBox).Text.Trim();
+                        string firstName = (clientsData.FooterRow.FindControl("TextBox6") as TextBox).Text.Trim();
+                        string lastName = (clientsData.FooterRow.FindControl("TextBox8") as TextBox).Text.Trim();
+                        string emailId = (clientsData.FooterRow.FindControl("TextBox10") as TextBox).Text.Trim();
+                        string phoneNumber = (clientsData.FooterRow.FindControl("TextBox12") as TextBox).Text.Trim();
+
+                        string query1 = "Insert into [dbo].[CredentialsTable] (UserName, Password, IsAdmin)  Values(@userName,@password, @isAdmin)";
+
+                        using (SqlCommand cmd = new SqlCommand(query1, con))
+                        {
+                            cmd.Parameters.AddWithValue("@userName", userName);
+                            cmd.Parameters.AddWithValue("@password", "1234");
+                            cmd.Parameters.AddWithValue("@isAdmin", isAdmin);
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        string query2 = "Insert into [dbo].[UserDetailsTable] (UserName, Gender, firstName, lastName, EmailId, PhoneNumber) " +
+                            "Values(@userName,@gender,@firstName,@lastName,@emailId,@phoneNumber)";
+
+
+                        using (SqlCommand cmd = new SqlCommand(query2, con))
+                        {
+                            cmd.Parameters.AddWithValue("@userName", userName);
+                            cmd.Parameters.AddWithValue("@gender", gender);
+                            cmd.Parameters.AddWithValue("@firstName", firstName);
+                            cmd.Parameters.AddWithValue("@lastName", lastName);
+                            cmd.Parameters.AddWithValue("@emailId", emailId);
+                            cmd.Parameters.AddWithValue("@phoneNumber", phoneNumber);
+                            cmd.ExecuteNonQuery();
+                        }
+
+
+                        con.Close();
+                        bindData();
                     }
-
-                    string query2 = "Insert into [dbo].[UserDetailsTable] (UserName, Gender, firstName, lastName, EmailId, PhoneNumber) " +
-                        "Values(@userName,@gender,@firstName,@lastName,@emailId,@phoneNumber)";
-
-
-                    using (SqlCommand cmd = new SqlCommand(query2, con))
-                    {
-                        cmd.Parameters.AddWithValue("@userName", userName);
-                        cmd.Parameters.AddWithValue("@gender", gender);
-                        cmd.Parameters.AddWithValue("@firstName", firstName);
-                        cmd.Parameters.AddWithValue("@lastName", lastName);
-                        cmd.Parameters.AddWithValue("@emailId", emailId);
-                        cmd.Parameters.AddWithValue("@phoneNumber", phoneNumber);
-                        cmd.ExecuteNonQuery();
-                    }
-
-
-                    con.Close();
                 }
             }
             catch(Exception ex)
@@ -151,7 +202,6 @@ namespace SwimmingPoolAndGymManagement
                 Console.WriteLine(ex);
             }
 
-            bindData();
         }
 
         protected void clientsData_RowEditCancelCommand(object sender, GridViewCancelEditEventArgs e)
@@ -162,35 +212,39 @@ namespace SwimmingPoolAndGymManagement
 
         protected void clientsData_RowDeleteCommand(object sender, GridViewDeleteEventArgs e)
         {
-            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyfFrstDataBaseConnectionString"].ConnectionString))
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyfFrstDataBaseConnectionString"].ConnectionString);
+
             try
             {
-                string userName = (clientsData.FooterRow.FindControl("textBox1") as TextBox).Text.Trim();
+                con.Open();
+                string userName = (clientsData.Rows[e.RowIndex].FindControl("Label1") as Label).Text.Trim();
 
-                string query1 = "Delete from [dbo].[CredentialsTable] where UserName = @name";
-                string query2 = "Delete from [dbo].[UserDetailsTable] where UserName = @name";
+                string q1 = "Delete from [dbo].[CredentialsTable] where UserName = @userName";
+                string q2 = "Delete from [dbo].[UserDetailsTable] where UserName = @userName";
+                string q3 = "Delete from [dbo].[Arequest] where UserName = @userName";
 
-                foreach (var query in new List<string>() { query1, query2 })
+
+                foreach (var query in new List<string>() { q1, q2, q3 })
                 {
                     using (SqlCommand cmd = new SqlCommand(query, con))
                     {
-                        cmd.Parameters.AddWithValue("@name", userName);
+                        cmd.Parameters.AddWithValue("@userName", userName);
                         cmd.ExecuteNonQuery();
                     }
                 }
-            }
+                bindData();
 
-             catch (Exception ss)
+            }
+            catch (Exception ss)
             {
-                    Console.WriteLine(ss);
+                Console.WriteLine(ss);
             }
-
             finally
             {
-                    con.Close();
+                con.Close();
             }
 
-            bindData();
+            
         }
 
         protected void clientsData_RowEditCommand(object sender, GridViewEditEventArgs e)
@@ -201,52 +255,94 @@ namespace SwimmingPoolAndGymManagement
 
         protected void clientsData_RowUpdateCommand(object sender, GridViewUpdateEventArgs e)
         {
-            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyfFrstDataBaseConnectionString"].ConnectionString))
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyfFrstDataBaseConnectionString"].ConnectionString);
+           
             try
             {
                 con.Open();
-                string userName = (clientsData.Rows[e.RowIndex].FindControl("textBox2") as TextBox).Text.Trim();
-                string gender = (clientsData.Rows[e.RowIndex].FindControl("textBox4") as TextBox).Text.Trim();
-                string firstName = (clientsData.Rows[e.RowIndex].FindControl("textBox6") as TextBox).Text.Trim();
-                string lastName = (clientsData.Rows[e.RowIndex].FindControl("textBox8") as TextBox).Text.Trim();
-                string emailId = (clientsData.Rows[e.RowIndex].FindControl("textBox10") as TextBox).Text.Trim();
-                string phoneNumber = (clientsData.Rows[e.RowIndex].FindControl("textBox12") as TextBox).Text.Trim();
 
-                string query = "Update[dbo].[UserDetailsTable]" +
-                    " set UserName= @user, Gender = @gender, " +
-                    "firstName = @firstName, lastName = @lastName, EmailId = @emailId " +
-                    "PhoneNumber = @phoneNumber where UserName = @name";
+                
+                string userName = (clientsData.Rows[e.RowIndex].FindControl("TextBox1") as TextBox)?.Text.Trim();
+                string gender = (clientsData.Rows[e.RowIndex].FindControl("TextBox3") as TextBox)?.Text.Trim();
+                string firstName = (clientsData.Rows[e.RowIndex].FindControl("TextBox5") as TextBox)?.Text.Trim();
+                string lastName = (clientsData.Rows[e.RowIndex].FindControl("TextBox7") as TextBox)?.Text.Trim();
+                string emailId = (clientsData.Rows[e.RowIndex].FindControl("TextBox9") as TextBox)?.Text.Trim();
+                string phoneNumber = (clientsData.Rows[e.RowIndex].FindControl("TextBox11") as TextBox)?.Text.Trim();
+                string query = "";
+
+                if (num == 1)
+                {
+                    userName = (clientsData.Rows[e.RowIndex].FindControl("Label1") as Label).Text.Trim();
+                    query = String.Format("Update [dbo].[CredentialsTable] set IsAdmin = 1 where UserName = '{0}'", userName);
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                         cmd.ExecuteNonQuery();
+                    }
+
+
+                    query = String.Format("DELETE from [dbo].[Arequest] where UserName = '{0}'", userName);
+                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    con.Close();
+                    clientsData.EditIndex = -1;
+                    bindData();
+                    return;
+                }
+
+
+                query = "Update[dbo].[UserDetailsTable]" +
+                " set UserName= @userName, Gender = @gender, " +
+                "firstName = @firstName, lastName = @lastName, EmailId = @emailId, " +
+                "PhoneNumber = @phoneNumber where UserName = @userName";
 
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@name", userName);
+                    cmd.Parameters.AddWithValue("@userName", userName);
                     cmd.Parameters.AddWithValue("@gender", gender);
                     cmd.Parameters.AddWithValue("@firstName", firstName);
                     cmd.Parameters.AddWithValue("@lastName", lastName);
                     cmd.Parameters.AddWithValue("@emailId", emailId);
                     cmd.Parameters.AddWithValue("@phoneNumber", phoneNumber);
+
                     cmd.ExecuteNonQuery();
                 }
                 
             }
-
             catch(Exception ss)
-                {
-                    Console.WriteLine(ss);
-                }
-
+            {
+                Console.WriteLine(ss);
+            }
             finally
-                {
-                    con.Close();
-                }
+            {
+                con.Close();
+            }
 
+            clientsData.EditIndex = -1;
             bindData();
         }
 
         protected void LinkButton2_Click(object sender, EventArgs e)
         {
             isAdmin = 1;
+            num = 0;
             bindData();
+        }
+
+
+        
+
+        protected void LinkButton3_Click1(object sender, EventArgs e)
+        {
+            num = 1;
+            isAdmin = 0;
+            bindData();
+        }
+
+        protected void LinkButton4_Click(object sender, EventArgs e)
+        {
 
         }
     }

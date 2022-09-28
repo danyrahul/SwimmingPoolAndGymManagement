@@ -73,7 +73,6 @@
       <DependentUpon>Database1.mdf</DependentUpon>
     </Content>
     <Content Include="Customer_home.aspx" />
-    <Content Include="images\del.jpg" />
     <Content Include="images\img.jpg" />
     <Content Include="Login.aspx" />
     <Content Include="images\Login_bg.jpg" />
