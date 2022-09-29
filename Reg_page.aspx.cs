@@ -49,7 +49,7 @@ namespace SwimmingPoolAndGymManagement
                     gender = DropDownList1.DataTextField;
                 }
 
-                
+              
       
 
                 string query = "Insert into [dbo].[CredentialsTable] (UserName, Password)  Values(@userName,@password)";

@@ -67,6 +67,11 @@
             <asp:Button ID="Button3" runat="server" OnClick="Button3_Click" Text="Forgot Password ?" />
         </div>
 
+        <div>
+            <br />
+            <asp:Label ID="Label1" runat="server" Text="Incorrect UserName or Password!!" style="text-align : center  ;color : red ;margin-left : 175px "></asp:Label>
+        </div>
+
         
     </form>
 </body>

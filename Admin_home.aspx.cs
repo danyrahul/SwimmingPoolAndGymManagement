@@ -19,8 +19,8 @@ namespace SwimmingPoolAndGymManagement
         protected void Page_Load(object sender, EventArgs e)
         {
             clientsData.Visible = false;
-            
 
+            Session["i"] = 1;
             SqlConnection s2 = new SqlConnection(ConfigurationManager.ConnectionStrings["MyfFrstDataBaseConnectionString"].ConnectionString);
             try
             {
@@ -60,7 +60,7 @@ namespace SwimmingPoolAndGymManagement
 
         protected void Button1_Click(object sender, EventArgs e)
         {
-            
+            Response.Redirect("View_Profile.aspx");
 
         }
 

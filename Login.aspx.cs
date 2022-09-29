@@ -19,7 +19,7 @@ namespace SwimmingPoolAndGymManagement
 
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            Label1.Visible = false;
         }
 
         protected void Button1_Click(object sender, EventArgs e)
@@ -33,19 +33,33 @@ namespace SwimmingPoolAndGymManagement
                 string q1 = "select IsAdmin from [dbo].[CredentialsTable] where UserName = @userName and Password = @password";
                 SqlCommand cmd = new SqlCommand(q1, s1);
                 cmd.Parameters.AddWithValue("@userName", userName);
-                cmd.Parameters.AddWithValue("Password", password);
-                int a = (int)cmd.ExecuteScalar();
-                if (a == 0)
+                cmd.Parameters.AddWithValue("@password", password);
+
+                object userNameObj = cmd.ExecuteScalar();
+                if (userNameObj != null)
                 {
-                    Response.Redirect("Customer_home.aspx");
+                    int a = (int)cmd.ExecuteScalar();
+                    if (a == 0)
+                    {
+                        Response.Redirect("Customer_home.aspx");
+                    }
+                    else
+                    {
+                        Response.Redirect("Admin_home.aspx");
+                    }
                 }
+                    
                 else
                 {
-                    Response.Redirect("Admin_home.aspx");
+                    Label1.Visible=true;
                 }
+                
+                
+                
+
             }
 
-            catch (Exception ms)
+            catch (NullReferenceException ms)
             {
                 Console.WriteLine(ms.Message);
             }

@@ -79,6 +79,7 @@
     <Content Include="images\Login.jpg" />
     <Content Include="Pass_reset.aspx" />
     <Content Include="Reg_page.aspx" />
+    <Content Include="View_Profile.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -117,6 +118,13 @@
     </Compile>
     <Compile Include="Reg_page.aspx.designer.cs">
       <DependentUpon>Reg_page.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="View_Profile.aspx.cs">
+      <DependentUpon>View_Profile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="View_Profile.aspx.designer.cs">
+      <DependentUpon>View_Profile.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

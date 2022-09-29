@@ -24,7 +24,7 @@
 </head>
 <body>
     <form id="form1" runat="server">
-        <div style =" background-color : cadetblue ;display : flex  ">
+        <div style =" background-color : cadetblue  ;display : flex  ">
             <h1>
                 <asp:Label ID="Label2" runat="server" Text="Welcome" style =" margin-left :790px"></asp:Label>
 
@@ -64,13 +64,7 @@
 
 
                 
-                <br />
-                <br />
-
-                <div style="text-align : center ;font-size : x-large ;cursor: pointer">
-                    <asp:LinkButton ID="LinkButton4" runat="server" OnClick="LinkButton4_Click">LinkButton4</asp:LinkButton>
-                </div>
-
+                
 
             </div>
 
