@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
@@ -19,6 +20,7 @@ namespace SwimmingPoolAndGymManagement
         protected void Page_Load(object sender, EventArgs e)
         {
             clientsData.Visible = false;
+            equipmentData.Visible = false;
 
             Session["i"] = 1;
             SqlConnection s2 = new SqlConnection(ConfigurationManager.ConnectionStrings["MyfFrstDataBaseConnectionString"].ConnectionString);
@@ -529,6 +531,62 @@ namespace SwimmingPoolAndGymManagement
             }
         }
 
+        protected void CalculateMinus(object sender, EventArgs e)
+        {
+            Button btn = (sender) as Button;
+            GridViewRow row = (GridViewRow)btn.NamingContainer;
+
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyfFrstDataBaseConnectionString"].ConnectionString);
+
+            con.Open();
+
+            string Ename = (row.FindControl("Ename") as TextBox).Text.Trim();
+            int Quantity = Convert.ToInt16((row.FindControl("Quantity") as TextBox).Text.Trim());
+
+            if (Quantity > 0)
+            {
+                Quantity--;
+            }
+
+            string query = "";
+
+            query = String.Format("Update [dbo].[EquipTable] set Quantity = '{0}'  where Ename = '{1}' ", Quantity, Ename);
+            using (SqlCommand cmd = new SqlCommand(query, con))
+            {
+                cmd.ExecuteNonQuery();
+            }
+
+            equipmentData.EditIndex = -1;
+            bindData(10);
+            
+        }
+
+        protected void CalculatePlus(object sender, EventArgs e)
+        {
+            Button btn = (sender) as Button;
+            GridViewRow row = (GridViewRow)btn.NamingContainer;
+
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyfFrstDataBaseConnectionString"].ConnectionString);
+
+            con.Open();
+
+            string Ename = (row.FindControl("Ename") as TextBox).Text.Trim();
+            int Quantity = Convert.ToInt16((row.FindControl("Quantity") as TextBox).Text.Trim());
+
+            Quantity++;
+
+            string query = "";
+
+            query = String.Format("Update [dbo].[EquipTable] set Quantity = '{0}'  where Ename = '{1}' ", Quantity, Ename);
+            using (SqlCommand cmd = new SqlCommand(query, con))
+            {
+                cmd.ExecuteNonQuery();
+            }
+
+            equipmentData.EditIndex = -1;
+            bindData(10);
+        }
+
         protected void LinkButton2_Click(object sender, EventArgs e)
         {
             tt(0);
@@ -547,7 +605,7 @@ namespace SwimmingPoolAndGymManagement
 
         protected void LinkButton4_Click1(object sender, EventArgs e)
         {
-            tt(10);
+            //tt(10);
             bindData(10);
         }
     }
