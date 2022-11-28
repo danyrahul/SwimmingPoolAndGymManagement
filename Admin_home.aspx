@@ -30,8 +30,8 @@
 
             </h1>
 
-                <asp:Button ID="Button1" runat="server" Text="My Profile" Style="-moz-border-radius: 10px; -webkit-border-radius: 10px; -khtml-border-radius: 10px; cursor: pointer; padding: 5px;margin-left: 550px; " OnClick="Button1_Click" />
-                <asp:Button ID="Button2" runat="server" Text="Logout" Style="-moz-border-radius: 10px; -webkit-border-radius: 10px; -khtml-border-radius: 10px; cursor: pointer; padding: 5px;" OnClick="Button2_Click" />
+                <asp:Button ID="Button1" runat="server" Text="My Profile" Style=" -moz-border-radius: 10px; -webkit-border-radius: 10px; -khtml-border-radius: 10px;cursor: pointer;margin-left: 550px; height : 40px;margin-top :17px" OnClick="Button1_Click" />
+                <asp:Button ID="Button2" runat="server" Text="Logout" Style="-moz-border-radius: 10px; -webkit-border-radius: 10px; -khtml-border-radius: 10px; cursor: pointer; height : 40px;margin-top :17px;margin-left: 1px" OnClick="Button2_Click" />
         </div>
 
 
@@ -63,7 +63,12 @@
                 </div>
 
 
-                
+                <br />
+                <br />
+
+                <div style="text-align : center ;font-size : x-large ;cursor: pointer">
+                    <asp:LinkButton ID="LinkButton4" runat="server" OnClick="LinkButton4_Click1">Equipment check</asp:LinkButton>
+                </div>
                 
 
             </div>
@@ -71,13 +76,12 @@
             <div style="background-color:lightblue;height:645px;width : 70% ">
                 
               
-                <%--<% ------------- Clients Table Init ----------------- %>--%>
-
+               
                 <asp:GridView ID="clientsData" CssClass="table" runat="server" AutoGenerateColumns="false"
-                    OnRowCommand="clientsData_RowCommand" OnRowCancelingEdit="clientsData_RowEditCancelCommand"
+                    OnRowCancelingEdit="clientsData_RowEditCancelCommand"
                     OnRowUpdating="clientsData_RowUpdateCommand" OnRowDeleting="clientsData_RowDeleteCommand"
                     OnRowEditing="clientsData_RowEditCommand" OnRowDataBound="clientsData_OnRowDataBound"
-                    ShowFooter="true" ShowHeaderWhenEmpty="true">
+                    ShowFooter="true" ShowHeaderWhenEmpty="true" UseAccessibleHeaderText="true">
 
                     <Columns>
 
@@ -95,7 +99,7 @@
 
                         <asp:TemplateField HeaderText="Gender" ItemStyle-Width="120px" ItemStyle-CssClass="Country">
                             <ItemTemplate>
-                                <asp:Label  ID="Label2" Text ='<%# Eval("Gender") %>' runat="server" />
+                                <asp:Label  ID="Label12" Text ='<%# Eval("Gender") %>' runat="server" />
                             </ItemTemplate>
                             <EditItemTemplate>
                                 <asp:TextBox ID="TextBox3" Text ='<%# Eval("Gender") %>' runat="server"></asp:TextBox>
@@ -168,6 +172,58 @@
                             </EditItemTemplate>
                             <FooterTemplate>
                                 <asp:Button ID="Button7" runat="server" Text="AddNew"  CommandName="AddNew" ToolTip="AddNew" width="80px" height="25px" />
+                            </FooterTemplate>
+                        </asp:TemplateField>
+
+                    </Columns>                    
+                </asp:GridView>
+
+                <%--<% ------------- Equipment Table Init ----------------- %>--%>
+
+                <asp:GridView ID="equipmentData" CssClass="table" runat="server" AutoGenerateColumns="false"
+                    OnRowCancelingEdit="equipmentData_RowEditCancelCommand"
+                    OnRowUpdating="equipmentData_RowUpdateCommand" OnRowDeleting="equipmentData_RowDeleteCommand"
+                    OnRowEditing="equipmentData_RowEditCommand" OnRowDataBound="equipmentData_OnRowDataBound"
+                    ShowFooter="true" ShowHeaderWhenEmpty="true" UseAccessibleHeaderText="true">
+
+                    <Columns>
+
+                        <asp:TemplateField HeaderText="Ename" ItemStyle-Width="120px" ItemStyle-CssClass="Name">
+                            <ItemTemplate>
+                                <asp:Label ID="Label01" Text ='<%# Eval("Ename") %>' runat="server" />
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="TextBox01" Text ='<%# Eval("Ename") %>' runat="server"></asp:TextBox>
+                            </EditItemTemplate>
+                            <FooterTemplate >
+                                <asp:TextBox ID="TextBox02" runat="server"></asp:TextBox>
+                            </FooterTemplate>
+                        </asp:TemplateField>
+
+                        <asp:TemplateField HeaderText="Quantity" ItemStyle-Width="120px" ItemStyle-CssClass="Country">
+                            <ItemTemplate>
+                                <asp:Label  ID="Label02" Text ='<%# Eval("Quantity") %>' runat="server" />
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="TextBox03" Text ='<%# Eval("Gender") %>' runat="server"></asp:TextBox>
+                            </EditItemTemplate>
+                            <FooterTemplate >
+                                <asp:TextBox ID="TextBox04" runat="server"></asp:TextBox>
+                            </FooterTemplate>
+                        </asp:TemplateField>
+
+
+                        <asp:TemplateField  >
+                            <ItemTemplate >
+                                <asp:Button ID="Button03" runat="server" Text="Delete"   CommandName="Delete" ToolTip="Delete" width="50px" height="25px" />
+                                <asp:Button ID="Button04" runat="server" Text="Edit"  CommandName="Edit" ToolTip="Edit" width="50px" height="25px" />
+                            </ItemTemplate>
+                            <EditItemTemplate >
+                                <asp:Button ID="Button05" runat="server" Text="Save"  CommandName="Update" ToolTip="Save" width="50px" height="25px" />
+                                <asp:Button ID="Button06" runat="server" Text="Cancel"  CommandName="Cancel" ToolTip="Cancel" width="50px" height="25px" />
+                            </EditItemTemplate>
+                            <FooterTemplate>
+                                <asp:Button ID="Button07" runat="server" Text="AddNew"  CommandName="AddNew" ToolTip="AddNew" width="80px" height="25px" />
                             </FooterTemplate>
                         </asp:TemplateField>
 

@@ -25,7 +25,7 @@
             border-radius : 25px;
             height : 500px;
             width : 500px;
-            margin-left : 1200px;
+            margin-left : 1100px;
             margin-top : 50px;
             background-color : aqua ;
 

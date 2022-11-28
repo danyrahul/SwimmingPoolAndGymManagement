@@ -14,8 +14,8 @@
 
             </h1>
 
-                <asp:Button ID="Button1" runat="server" Text="Home" Style="-moz-border-radius: 10px; -webkit-border-radius: 10px; -khtml-border-radius: 10px; cursor: pointer; padding: 5px;margin-left: 450px; " OnClick="Button1_Click" />
-                <asp:Button ID="Button2" runat="server" Text="Logout" Style="-moz-border-radius: 10px; -webkit-border-radius: 10px; -khtml-border-radius: 10px; cursor: pointer; padding: 5px;" OnClick="Button2_Click" />
+                <asp:Button ID="Button1" runat="server" Text="Home" Style="-moz-border-radius: 10px; -webkit-border-radius: 10px; -khtml-border-radius: 10px; cursor: pointer; padding: 5px;margin-left: 450px; height : 40px;margin-top :17px " OnClick="Button1_Click" />
+                <asp:Button ID="Button2" runat="server" Text="Logout" Style="-moz-border-radius: 10px; -webkit-border-radius: 10px; -khtml-border-radius: 10px; cursor: pointer; padding: 5px; height : 40px;margin-top :17px;margin-left: 1px" OnClick="Button2_Click" />
         </div>
 
   

@@ -45,7 +45,43 @@ namespace SwimmingPoolAndGymManagement
             
         }
 
+        private void tt(int val)
+        {
+            if (val == 0)
+            {
+                clientsData.Columns[0].Visible = true;
+                clientsData.Columns[0].HeaderText = "UserName";
 
+                clientsData.Columns[1].Visible = true;
+                clientsData.Columns[1].HeaderText = "Gender";
+
+                clientsData.Columns[2].Visible = true;
+                clientsData.Columns[2].HeaderText = "firstName";
+
+                clientsData.Columns[3].Visible = true;
+                clientsData.Columns[3].HeaderText = "lastName";
+
+                clientsData.Columns[4].Visible = true;
+                clientsData.Columns[4].HeaderText = "emailId";
+
+                clientsData.Columns[5].Visible = true;
+                clientsData.Columns[5].HeaderText = "phoneNumber";
+            }
+            else
+            {
+                clientsData.Columns[0].Visible = true;
+                clientsData.Columns[0].HeaderText = "ItemName";
+
+                clientsData.Columns[1].Visible = true;
+                clientsData.Columns[1].HeaderText = "Quantity";
+
+                clientsData.Columns[2].Visible = false;
+                clientsData.Columns[3].Visible = false;
+                clientsData.Columns[4].Visible = false;
+                clientsData.Columns[5].Visible = false;
+            }
+        
+        }
 
         protected void DropDownList2_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -64,13 +100,18 @@ namespace SwimmingPoolAndGymManagement
 
         }
 
-        private void bindData()
+        private void bindData(int val = 0)
         {
             clientsData.Visible = false;
             string query;
             string p = "Pending";
             DataTable dt = new DataTable();
-            if (num == 0)
+
+            if (val == 10)
+            {
+                query = "select * from [dbo].[EquipTable]";
+            }
+            else if (num == 0)
             {
                 query = "SELECT * from [dbo].[CredentialsTable] as C INNER JOIN [dbo].[UserDetailsTable] as T " +
                 "ON C.UserName = T.UserName where isAdmin = " + isAdmin.ToString();
@@ -102,13 +143,25 @@ namespace SwimmingPoolAndGymManagement
                 dt.Rows.Add();
             }
 
-            clientsData.DataSource = dt;
-            clientsData.DataBind();
-            clientsData.Visible = true;
+            if (val == 10)
+            {
+                equipmentData.DataSource = dt;
+                equipmentData.DataBind();
+                equipmentData.Visible = true;
+            }
+            else
+            {
+                clientsData.DataSource = dt;
+                clientsData.DataBind();
+                clientsData.Visible = true;
+            }
         }
+
+        
 
         protected void LinkButton1_Click(object sender, EventArgs e)
         {
+            tt(0);
             isAdmin = 0;
             num = 0;
             bindData();
@@ -145,6 +198,40 @@ namespace SwimmingPoolAndGymManagement
 
                 lbApprove.Visible = true;
                 clientsData.ShowFooter = false;
+            }
+        }
+
+        protected void equipmentData_OnRowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            Button lbDelete = (Button)e.Row.Cells[2].FindControl("Button3");
+            Button lbEdit = (Button)e.Row.Cells[2].FindControl("Button4");
+            Button lbSave = (Button)e.Row.Cells[2].FindControl("Button5");
+            Button lbCancel = (Button)e.Row.Cells[2].FindControl("Button6");
+            Button lbAddNew = (Button)e.Row.Cells[2].FindControl("Button7");
+            Button lbApprove = (Button)e.Row.Cells[2].FindControl("Button8");
+
+
+            if (isAdmin == 1 && (lbDelete != null && lbEdit != null))
+            {
+                lbDelete.Visible = false;
+                lbEdit.Visible = false;
+                lbApprove.Visible = false;
+            }
+
+            if (num == 0 && lbApprove != null)
+            {
+                lbApprove.Visible = false;
+            }
+
+            if (num == 1 && lbApprove != null)
+            {
+                if (lbEdit != null)
+                {
+                    lbEdit.Visible = false;
+                }
+
+                lbApprove.Visible = true;
+                equipmentData.ShowFooter = false;
             }
         }
 
@@ -204,34 +291,112 @@ namespace SwimmingPoolAndGymManagement
 
         }
 
+        protected void equipmentData_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            try
+            {
+                if (e.CommandName == "AddNew")
+
+                {
+                    using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyfFrstDataBaseConnectionString"].ConnectionString))
+                    {
+                        con.Open();
+
+                        string Ename = (clientsData.FooterRow.FindControl("TextBox02") as TextBox).Text.Trim();
+                        string Quantity = (clientsData.FooterRow.FindControl("TextBox04") as TextBox).Text.Trim();
+                        
+
+                        string query1 = "Insert into [dbo].[EquipTable] (Ename,Quantity)  Values(@Ename,@Quantity)";
+
+                        using (SqlCommand cmd = new SqlCommand(query1, con))
+                        {
+                            cmd.Parameters.AddWithValue("@Ename", Ename);
+                            cmd.Parameters.AddWithValue("@Quantity", Quantity);
+                            
+                            cmd.ExecuteNonQuery();
+                        }
+
+                       
+
+
+                        con.Close();
+                        bindData();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+        }
+
         protected void clientsData_RowEditCancelCommand(object sender, GridViewCancelEditEventArgs e)
         {
             clientsData.EditIndex = -1;
             bindData();
         }
 
+
+        protected void equipmentData_RowEditCancelCommand(object sender, GridViewCancelEditEventArgs e)
+        {
+            equipmentData.EditIndex = -1;
+            bindData();
+        }
+
         protected void clientsData_RowDeleteCommand(object sender, GridViewDeleteEventArgs e)
+        {
+            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyfFrstDataBaseConnectionString"].ConnectionString))
+            {
+                try
+                {
+                    con.Open();
+                    string userName = (clientsData.Rows[e.RowIndex].FindControl("Label1") as Label).Text.Trim();
+
+                    string q1 = "Delete from [dbo].[CredentialsTable] where UserName = @userName";
+                    string q2 = "Delete from [dbo].[UserDetailsTable] where UserName = @userName";
+                    string q3 = "Delete from [dbo].[Arequest] where UserName = @userName";
+
+
+                    foreach (var query in new List<string>() { q1, q2, q3 })
+                    {
+                        using (SqlCommand cmd = new SqlCommand(query, con))
+                        {
+                            cmd.Parameters.AddWithValue("@userName", userName);
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                    bindData();
+                }
+                catch (Exception ss)
+                {
+                    Console.WriteLine(ss);
+                }
+                finally
+                {
+                    con.Close();
+                }
+            }
+        }
+
+        protected void equipmentData_RowDeleteCommand(object sender, GridViewDeleteEventArgs e)
         {
             SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyfFrstDataBaseConnectionString"].ConnectionString);
 
             try
             {
                 con.Open();
-                string userName = (clientsData.Rows[e.RowIndex].FindControl("Label1") as Label).Text.Trim();
+                string Ename = (clientsData.Rows[e.RowIndex].FindControl("Label01") as Label).Text.Trim();
 
-                string q1 = "Delete from [dbo].[CredentialsTable] where UserName = @userName";
-                string q2 = "Delete from [dbo].[UserDetailsTable] where UserName = @userName";
-                string q3 = "Delete from [dbo].[Arequest] where UserName = @userName";
+                string query = "Delete from [dbo].[CredentialsTable] where Ename = @Ename";
 
 
-                foreach (var query in new List<string>() { q1, q2, q3 })
-                {
-                    using (SqlCommand cmd = new SqlCommand(query, con))
-                    {
-                        cmd.Parameters.AddWithValue("@userName", userName);
-                        cmd.ExecuteNonQuery();
-                    }
-                }
+
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@Ename", Ename);
+                cmd.ExecuteNonQuery();
+                    
+                
                 bindData();
 
             }
@@ -244,12 +409,18 @@ namespace SwimmingPoolAndGymManagement
                 con.Close();
             }
 
-            
+
         }
 
         protected void clientsData_RowEditCommand(object sender, GridViewEditEventArgs e)
         {
             clientsData.EditIndex = e.NewEditIndex;
+            bindData();
+        }
+
+        protected void equipmentData_RowEditCommand(object sender, GridViewEditEventArgs e)
+        {
+            equipmentData.EditIndex = e.NewEditIndex;
             bindData();
         }
 
@@ -324,26 +495,60 @@ namespace SwimmingPoolAndGymManagement
             bindData();
         }
 
+        protected void equipmentData_RowUpdateCommand(object sender, GridViewUpdateEventArgs e)
+        {
+            SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["MyfFrstDataBaseConnectionString"].ConnectionString);
+
+            try
+            {
+                con.Open();
+
+                string Ename = (equipmentData.Rows[e.RowIndex].FindControl("TextBox02") as TextBox).Text.Trim();
+                string Quantity = (equipmentData.Rows[e.RowIndex].FindControl("TextBox04") as TextBox).Text.Trim();
+
+                string query = "";
+                    
+                query = String.Format("Update [dbo].[EquipTable] set Quantity = '{0}'  where Ename = '{1}' ", Quantity,Ename);
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+
+                clientsData.EditIndex = -1;
+                bindData();
+            }
+            catch (Exception ss)
+            {
+                Console.WriteLine(ss);
+                clientsData.EditIndex = -1;
+                bindData();
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
         protected void LinkButton2_Click(object sender, EventArgs e)
         {
+            tt(0);
             isAdmin = 1;
             num = 0;
             bindData();
         }
 
-
-        
-
         protected void LinkButton3_Click1(object sender, EventArgs e)
         {
+            tt(0);
             num = 1;
             isAdmin = 0;
             bindData();
         }
 
-        protected void LinkButton4_Click(object sender, EventArgs e)
+        protected void LinkButton4_Click1(object sender, EventArgs e)
         {
-
+            tt(10);
+            bindData(10);
         }
     }
 }

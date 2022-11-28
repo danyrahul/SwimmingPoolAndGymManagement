@@ -88,7 +88,7 @@
         <br />
 
         <div style ="text-align : center ">
-            <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="Login.aspx" Visible ="false" ></asp:HyperLink>
+            <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="Login.aspx" Visible ="false" >Go to Login Page</asp:HyperLink>
         </div>
 
     </form>

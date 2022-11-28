@@ -26,8 +26,8 @@
 
             </h1>
 
-                <asp:Button ID="Button1" runat="server" Text="My Profile" Style="-moz-border-radius: 10px; -webkit-border-radius: 10px; -khtml-border-radius: 10px; cursor: pointer; padding: 5px;margin-left: 550px; " OnClick="Button1_Click" />
-                <asp:Button ID="Button2" runat="server" Text="Logout" Style="-moz-border-radius: 10px; -webkit-border-radius: 10px; -khtml-border-radius: 10px; cursor: pointer; padding: 5px;" OnClick="Button2_Click" />
+                <asp:Button ID="Button1" runat="server" Text="My Profile" Style="-moz-border-radius: 10px; -webkit-border-radius: 10px; -khtml-border-radius: 10px; cursor: pointer; padding: 5px;margin-left: 550px;  height : 40px;margin-top :17px" OnClick="Button1_Click" />
+                <asp:Button ID="Button2" runat="server" Text="Logout" Style="-moz-border-radius: 10px; -webkit-border-radius: 10px; -khtml-border-radius: 10px; cursor: pointer; padding: 5px; height : 40px;margin-top :17px;margin-left: 1px" OnClick="Button2_Click" />
         </div>
 
         <div id ="main">
@@ -70,7 +70,7 @@
                 <asp:GridView ID="clientsData" CssClass="table" runat="server" AutoGenerateColumns="false"
                     ShowFooter="true" ShowHeaderWhenEmpty="true"
                     OnRowDataBound="clientsData_OnRowDataBound"
-                    OnRowUpdating="clientsData_RowUpdateCommand" >
+                    OnRowUpdating="clientsData_RowUpdateCommand" style ="margin-left : 10px">
 
                     
                     <Columns>
